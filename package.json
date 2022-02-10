@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "node index.js && mocha ./test/* --exit"
   },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kartheekdabbiru97/webservice.git"
