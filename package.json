@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha ./test/* --exit"
   },
   "repository": {
     "type": "git",
