@@ -9,5 +9,5 @@ app.get("/healthz", (req, res, next) => {
    
 
 app.listen(3000, () => {
- console.log("Welcome to the web service for CSYE6225 : Listening on port 3000");
+ console.log("Web service for CSYE6225 : Listening on port 3000");
 });
