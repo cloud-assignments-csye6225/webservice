@@ -25,6 +25,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             required: true,
             unique: {
+                args: true,
                 msg: 'Username should be unique',
                 fields: ['username']
             },
