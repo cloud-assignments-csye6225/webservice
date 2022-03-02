@@ -36,4 +36,4 @@ jobs:
           AWS_SOURCE_AMI: ${{ secrets.AWS_SOURCE_AMI }}
           AWS_SUBNET_ID: ${{ secrets.AWS_SUBNET_ID }}
           AWS_SSH_USERNAME: ${{ secrets.AWS_SSH_USERNAME }}
-          AMI_USERS: ${{ secrets.AMI_USERS }}
+          AMI_USERS: ${{ secrets.AMI_PROD_USERNAME }}

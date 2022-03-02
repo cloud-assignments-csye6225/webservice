@@ -6,7 +6,7 @@
       "subnet_id": "{{env `AWS_SUBNET_ID`}}",
       "source_ami": "{{env `AWS_SOURCE_AMI`}}",
       "ssh_username": "{{env `AWS_SSH_USERNAME`}}",
-      "prod_username": "{{env `AMI_USERS`}}"
+      "prod_username": "{{env `AMI_PROD_USERNAME`}}"
 
     },
     "builders": [
