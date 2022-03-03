@@ -37,9 +37,10 @@
           {
               "type": "shell",
               "inline": [
-                "sudo apt-get update -y",
-                "sudo apt-get upgrade -y",
-                "sudo apt-get install nginx -y",
+                ""
+                "sudo yum update -y",
+                "sudo yum upgrade -y",
+                "sudo yum install nginx -y",
                 "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -",
                 "sudo apt install nodejs -y",
                 "sudo apt update -y",
