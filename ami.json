@@ -5,7 +5,7 @@
       "aws_region": "{{env `AWS_REGION`}}",
       "subnet_id": "{{env `AWS_SUBNET_ID`}}",
       "source_ami": "ami-048ff3da02834afdc",
-      "ssh_username": "ubuntu",
+      "ssh_username": "ec2-user",
       "prod_username": "{{env `AMI_PROD_USERNAME`}}"
 
     },
