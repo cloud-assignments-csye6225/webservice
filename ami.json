@@ -45,6 +45,11 @@
             "destination": "/tmp/app_patch.zip"
         },
         {
+            "type": "file",
+            "source": "app.service",
+            "destination": "/tmp/app.service"
+        },
+        {
             "type": "shell",
             "scripts": "packerbuild.sh"
         }
