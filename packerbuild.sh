@@ -9,6 +9,8 @@ sleep 30
 sudo systemctl enable --now postgresql-13
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'kartheek';"
 sudo -u postgres psql -c 'CREATE DATABASE user_db';
+sudo -u postgres psql -c '\c user_db';
+sudo -u postgres psql -c 'CREATE TABLE users (id VARCHAR(255) NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL, account_created VARCHAR(255), account_updated VARCHAR(255))';
 curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
 sudo yum install -y nodejs
 cd /tmp
