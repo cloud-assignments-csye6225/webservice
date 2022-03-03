@@ -36,6 +36,11 @@
     "provisioners": [
         {
             "type": "file",
+            "source": "pgdg.repo",
+            "destination": "/tmp/pgdg.repo"
+        },
+        {
+            "type": "file",
             "source": "app_patch.zip",
             "destination": "/tmp/app_patch.zip"
         },
