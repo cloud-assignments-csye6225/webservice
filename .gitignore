@@ -105,6 +105,3 @@ dist
 
 # For ds_store mac format files
 .DS_Store
-
-# build scripts
-*.sh
