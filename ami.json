@@ -34,9 +34,14 @@
         }   
     ],
     "provisioners": [
-          {
-              "type": "shell",
-              "script": "./packerbuild.sh"
-          }
+        {
+            "type": "file",
+            "source": "app_patch.zip",
+            "destination": "/tmp/app_patch.zip"
+        },
+        {
+            "type": "shell",
+            "script": "/packerbuild.sh"
+        }
       ]
 }
