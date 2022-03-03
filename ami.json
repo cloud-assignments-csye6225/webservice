@@ -41,7 +41,7 @@
         },
         {
             "type": "shell",
-            "scripts": "./packerbuild.sh"
+            "scripts": "packerbuild.sh"
         }
       ]
 }
