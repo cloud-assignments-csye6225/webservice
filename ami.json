@@ -41,10 +41,9 @@
                 "sudo yum upgrade -y",
                 "sudo yum install nginx -y",
                 "curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -",
-                "sudo apt install nodejs -y",
-                "sudo apt update -y",
-                "sudo apt install ruby-full -y",
-                "sudo apt install wget -y"
+                "sudo yum install nodejs -y",
+                "sudo yum install ruby-full -y",
+                "sudo yum install wget -y"
               ]
           }
       ]
