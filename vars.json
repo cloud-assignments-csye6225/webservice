@@ -1,0 +1,10 @@
+{
+    "aws_region": "us-east-1",
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "instance_type": "",
+    "subnet_id": "",
+    "source_ami": "ami-048ff3da02834afdc",
+    "prod_username": "",
+    "ssh_username": "ubuntu"
+}
