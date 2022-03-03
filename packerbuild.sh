@@ -12,12 +12,12 @@ sudo -u postgres psql -c 'CREATE DATABASE user_db';
 curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
 sudo yum install -y nodejs
 cd /tmp
-unzip webservice.zip
-cd webservice
+unzip app_patch.zip
+cd app_patch
 sudo npm install bcrypt
 sudo npm install
 sudo npm install -g nodemon
 sudo npm run db-migrate
-sudo mv /tmp/webservice.service /etc/systemd/system/webservice.service
-sudo systemctl enable webservice.service
-sudo systemctl start webservice.service
+sudo mv /tmp/app.service /etc/systemd/system/app.service
+sudo systemctl enable app.service
+sudo systemctl start app.service
