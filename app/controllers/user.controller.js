@@ -11,7 +11,7 @@ const {uploadFileToS3} = require("../../s3");
 const {deleteFileFromS3} = require("../../s3");
 const fs = require("fs");
 const util = require('util');
-const baseUrl = "http://localhost:8080/v1/self/pic";
+const baseUrl = "http://localhost:3000/v1/self/pic";
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser')
 
