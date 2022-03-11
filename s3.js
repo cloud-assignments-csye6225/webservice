@@ -4,11 +4,11 @@ const S3 = require('aws-sdk/clients/s3')
 const util = require("util");
 const bodyParser = require('body-parser');
 
-const bucketName = process.env.AWS_BUCKET_NAME
+const bucketName = process.env.RDS_BUCKET_NAME
 const region = process.env.AWS_BUCKET_REGION
 const accessKeyId = process.env.AWS_ACCESS_KEY
 const secretAccessKey = process.env.AWS_SECRET_KEY
-const Key = "BucketImage" + Math.floor(Math.random())
+const Key = "profile_photo" + Math.floor(Math.random())
 console.log('bucket', bucketName)
 const s3 = new S3({
     region,
@@ -23,7 +23,7 @@ exports.uploadFileToS3 = (req, res, file) => {
       const uploadParams = {
       Bucket: bucketName,
       Body: req.body,
-      Key: Key//"BucketImage" + random 
+      Key: Key
       }
      return s3.upload(uploadParams).promise()
       
