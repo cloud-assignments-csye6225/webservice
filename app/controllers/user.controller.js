@@ -238,11 +238,7 @@ exports.upload = async (req, res) => {
     const location = result.Location
     const imageInfo = await this.createImage(req, res, location)
 
-    res.status(201).send({
-      message: "Profile pic added",
-      imageInfo
-      
-    })
+    res.status(204).send(imageInfo)
     
   } catch (err) {
     console.log(err);
@@ -334,20 +330,18 @@ exports.fetchImageByUsername=async(req, res)=>{
     where: {
       user_id:result.id
     }
+  });
+  if(!result1){
+    res.status(404).send();
+  }
+  res.status(200).send({
+    file_name: result1.file_name,
+    id: result1.id,
+    url: result1.url,
+    upload_date: result1.upload_date,
+    user_id: result1.user_id
   })
-  .then(data => {
-    const imageData = {
-      file_name: result1.file_name,
-      id: result1.id,
-      url: result1.url,
-      upload_date: result1.upload_date,
-      user_id: result1.user_id
-    }
-    res.status(200).send(imageData)
-  }).catch(err => {
-    res.status(404).send()
-  })
-  
+
 }
 
 //delete image data by userId
@@ -365,7 +359,10 @@ exports.deleteImageByUserId=async(req, res)=>{
     }
   });
   await deleteFileFromS3(req,res,result);
-  res.status(200).send("Record Deleted Successfully!!!")
+  if(!result1){
+    res.status(404).send("Profile picture doesn't exist to delete!")
+  }
+  res.status(204).send()
 }
 
 
