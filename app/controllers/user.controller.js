@@ -238,7 +238,7 @@ exports.upload = async (req, res) => {
     const location = result.Location
     const imageInfo = await this.createImage(req, res, location)
 
-    res.status(204).send(imageInfo)
+    res.status(201).send(imageInfo)
     
   } catch (err) {
     console.log(err);
