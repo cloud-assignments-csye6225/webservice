@@ -63,7 +63,7 @@ exports.create = (req, res) => {
                   account_created: data.account_created,
                   account_updated: data.account_updated
                 }                
-                res.status(201).send({dataNew});
+                res.status(201).send(dataNew);
             })
             .catch(err => {
                 res.status(400).send();
