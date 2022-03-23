@@ -8,7 +8,7 @@ const bucketName = process.env.RDS_BUCKET_NAME
 const region = process.env.AWS_BUCKET_REGION
 const accessKeyId = process.env.AWS_ACCESS_KEY
 const secretAccessKey = process.env.AWS_SECRET_KEY
-const Key = "profile_photo" + Math.floor(Math.random())
+const imageKey = "profile_photo" + Math.floor(Math.random())
 console.log('bucket', bucketName)
 const s3 = new S3({
     region,
@@ -18,7 +18,14 @@ const s3 = new S3({
 
 exports.uploadFileToS3 = (req, res, file) => {
 
-   
+    let result = await User.findOne({
+        where: {
+          username:global.username
+        }
+      });
+     const id = result.id;
+
+    const Key = id + "/" + imageKey
       const random = Math.floor(Math.random())
       const uploadParams = {
       Bucket: bucketName,
