@@ -3,6 +3,8 @@ const fs = require('fs')
 const S3 = require('aws-sdk/clients/s3')
 const util = require("util");
 const bodyParser = require('body-parser');
+const db = require("./app/models");
+const User = db.users;
 
 const bucketName = process.env.RDS_BUCKET_NAME
 const region = process.env.AWS_BUCKET_REGION
@@ -16,6 +18,17 @@ const s3 = new S3({
     secretAccessKey
 })
 
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
 exports.uploadFileToS3 = (req, res, file) => {
 
     let result = User.findOne({
@@ -23,9 +36,9 @@ exports.uploadFileToS3 = (req, res, file) => {
           username:global.username
         }
       });
-     const id = result.id;
+    const id = result.id;
 
-    const Key = id + "/" + imageKey
+      const Key = makeid(10) + "/" + imageKey
       const random = Math.floor(Math.random())
       const uploadParams = {
       Bucket: bucketName,
