@@ -18,7 +18,7 @@ const s3 = new S3({
 
 exports.uploadFileToS3 = (req, res, file) => {
 
-    let result = await User.findOne({
+    let result = User.findOne({
         where: {
           username:global.username
         }
