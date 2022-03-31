@@ -63,3 +63,32 @@ jobs:
           AWS_SUBNET_ID: ${{ secrets.AWS_SUBNET_ID }}
           AWS_SSH_USERNAME: ${{ secrets.AWS_SSH_USERNAME }}
           AMI_PROD_USERNAME: ${{ secrets.AMI_PROD_USERNAME }}
+      
+      # Code deploy
+      # - name: Configuring AWS credentials from Test account
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+      #     aws-region: us-east-1 
+
+      - name: Uploading Application Revision to CodeDeploy S3 Bucket
+        run: |
+          aws s3 sync ./codedeploy_artifact s3://${{ secrets.AWS_CODEDEPLOY_S3_BUCKET }}
+          
+      - name: CodeDeploy API call
+        run: |
+          output=$(aws deploy create-deployment \
+          --application-name csye6225-webapp \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name csye6225-webapp-deployment \
+          --description "CSYE6255 - CodeDeploy from Github Actions" \
+          --s3-location bucket=${{ secrets.AWS_CODEDEPLOY_S3_BUCKET }},key=build-${{ github.sha }}.zip,bundleType=zip \
+          --region ${{ secrets.AWS_REGION }} \
+          --file-exists-behavior OVERWRITE \
+          --output json)
+          depId=$(echo $output | jq -r '.deploymentId')
+          aws deploy wait deployment-successful --deployment-id $depId
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_CODEDEPLOY_S3_BUCKET: ${{ secrets.AWS_CODEDEPLOY_S3_BUCKET }}
