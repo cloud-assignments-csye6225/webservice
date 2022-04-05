@@ -74,6 +74,7 @@ jobs:
 
       - name: Uploading Application Revision to CodeDeploy S3 Bucket
         run: |
+          mkdir codedeploy_artifact
           aws s3 sync ./codedeploy_artifact s3://${{ secrets.AWS_CODEDEPLOY_S3_BUCKET }}
           
       - name: CodeDeploy API call
