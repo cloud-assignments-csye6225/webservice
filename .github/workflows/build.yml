@@ -64,7 +64,7 @@ jobs:
           AWS_SSH_USERNAME: ${{ secrets.AWS_SSH_USERNAME }}
           AMI_PROD_USERNAME: ${{ secrets.AMI_PROD_USERNAME }}
       
-      Code deploy
+      # Code deploy
       - name: Configuring AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v1
         with:
