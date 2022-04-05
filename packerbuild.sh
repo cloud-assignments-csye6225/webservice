@@ -11,6 +11,7 @@ sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'Kdabiru@2023';"
 sudo -u postgres psql -c 'CREATE DATABASE user_db';
 curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
 sudo yum install -y nodejs
+mkdir codedeploy_artifact
 cd /tmp
 unzip app_patch.zip
 cd app_patch
