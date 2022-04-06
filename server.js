@@ -39,7 +39,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
 
-app.get("/healthz", (req, res, next) => {
+app.get("/health", (req, res, next) => {
     res.json("You have reached the /healthz endpoint");
     res.status(200);
    });
