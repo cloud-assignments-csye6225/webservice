@@ -2,12 +2,12 @@ var supertest = require("supertest");
 var should = require("should");
 
 
-var server = supertest.agent("http://localhost:3000/healthz");
+var server = supertest.agent("http://localhost:3000/health");
 
 
 describe("UNIT TEST for healthz api endpoint",function(){
 
-  it("should healthz api endpoint",function(done){
+  it("should health api endpoint",function(done){
 
     server
     .get("/")
