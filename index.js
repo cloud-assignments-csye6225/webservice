@@ -3,7 +3,7 @@ var app = express();
 
 
 app.get("/healthz", (req, res, next) => {
-    res.json("You have reached the /health endpoint");
+    res.json("You have reached the /healthz endpoint");
     res.status(200);
    });
    
