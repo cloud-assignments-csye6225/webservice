@@ -14,3 +14,8 @@ hooks:
     - location: scripts/application_start.sh
       timeout: 300
       runas: ec2-user
+
+  Afterinstall:
+    - location: scripts/after_install.sh
+      timeout: 300
+      runas: ec2-user
