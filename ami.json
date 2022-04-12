@@ -65,7 +65,8 @@
                 "sudo service codedeploy-agent status",
                 "sudo service codedeploy-agent start",
                 "sudo service codedeploy-agent status",
-                "sudo yum -y install amazon-cloudwatch-agent"
+                "sudo yum -y install amazon-cloudwatch-agent",
+                "sudo systemctl enable x-cloudwatch-agent"
             ]
         }
       ]
