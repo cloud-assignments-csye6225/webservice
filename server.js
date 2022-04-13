@@ -5,6 +5,9 @@ const cors = require("cors");
 const auth = require("./app/middleware/auth")
 const app = express();
 
+var StatsD = require('node-statsd'),
+sdc = new StatsD();
+
 global.__basedir = __dirname;
 
 var corsOptions = {
@@ -40,6 +43,7 @@ app.listen(PORT, () => {
 })
 
 app.get("/healthz", (req, res, next) => {
+    sdc.increment('sdc_healthz'); //statsd counter metric
     res.json("You have reached the /healthz endpoint");
     res.status(200);
    });

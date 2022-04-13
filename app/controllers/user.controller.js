@@ -14,9 +14,12 @@ const util = require('util');
 const baseUrl = "http://localhost:3000/v1/self/pic";
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser')
+var StatsD = require('node-statsd'),
+sdc = new StatsD();
 
 // Create and Save a new User
 exports.create = (req, res) => {
+  sdc.increment('sdc_counter1'); //statsd counter metric
     // Validate request
     if (!req.body.first_name) {
       res.status(400).send();
@@ -304,6 +307,7 @@ return result;
 
 //fetch user data
 exports.fetchUserData=async(req, res)=>{
+  sdc.increment('sdc_counter2'); //statsd counter metric
   let result = await User.findOne({
     where: {
       username:global.username
