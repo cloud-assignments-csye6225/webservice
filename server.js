@@ -42,7 +42,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
 
-app.get("/health", (req, res, next) => {
+app.get("/healthz", (req, res, next) => {
     sdc.increment('sdc_healthz'); //statsd counter metric
     res.json("You have reached the /healthz endpoint");
     res.status(200);
