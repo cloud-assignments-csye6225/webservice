@@ -19,7 +19,7 @@ sdc = new StatsD();
 
 // Create and Save a new User
 exports.create = (req, res) => {
-  sdc.increment('sdc_counter1'); //statsd counter metric
+  sdc.increment('sdc_api_1'); //statsd counter metric
     // Validate request
     if (!req.body.first_name) {
       res.status(400).send();
@@ -118,8 +118,8 @@ exports.findOne = (req, res) => {
 
 
 exports.update = (req, res) => {
+  sdc.increment('sdc_api_3'); //statsd counter metric
 
-  
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if(err){
       res.status(400).json({
@@ -219,6 +219,7 @@ exports.createImage = async (req, res, location) => {
 // Uploading Image
 
 exports.upload = async (req, res) => {
+  sdc.increment('sdc_api_4'); //statsd counter metric
   bodyParser.raw({
         limit: "3mb",
         type: ["image/*"],
@@ -307,7 +308,7 @@ return result;
 
 //fetch user data
 exports.fetchUserData=async(req, res)=>{
-  sdc.increment('sdc_counter2'); //statsd counter metric
+  sdc.increment('sdc_api_2'); //statsd counter metric
   let result = await User.findOne({
     where: {
       username:global.username
@@ -325,6 +326,7 @@ exports.fetchUserData=async(req, res)=>{
 //fetch image data by username
 
 exports.fetchImageByUsername=async(req, res)=>{
+  sdc.increment('sdc_api_5'); //statsd counter metric
   let result = await User.findOne({
     where: {
       username:global.username
@@ -351,6 +353,7 @@ exports.fetchImageByUsername=async(req, res)=>{
 //delete image data by userId
 
 exports.deleteImageByUserId=async(req, res)=>{
+  sdc.increment('sdc_api_6'); //statsd counter metric
 
   let result = await User.findOne({
     where: {
@@ -375,6 +378,7 @@ exports.deleteImageByUserId=async(req, res)=>{
 
 // Delete a Users with the specified id in the request
 exports.delete = (req, res) => {
+  sdc.increment('sdc_api_7'); //statsd counter metric
   const id = req.params.id;
 
   User.destroy({
