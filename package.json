@@ -19,6 +19,7 @@
     "express-basic-auth": "^1.2.0",
     "fs": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
+    "log4js": "^6.4.5",
     "node-statsd": "^0.1.1",
     "nodemon": "^2.0.14",
     "pg": "^8.7.1",
