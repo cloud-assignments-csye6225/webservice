@@ -14,12 +14,15 @@ const util = require('util');
 const baseUrl = "http://localhost:3000/v1/self/pic";
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser')
+const log = require("../../log4js")
+const logger = log.getLogger('log4js');
 var StatsD = require('node-statsd'),
 sdc = new StatsD();
 
 // Create and Save a new User
 exports.create = (req, res) => {
   sdc.increment('sdc_api_1'); //statsd counter metric
+  logger.info("[INFO]: Create user api endpoint is called");
     // Validate request
     if (!req.body.first_name) {
       res.status(400).send();
@@ -119,6 +122,7 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
   sdc.increment('sdc_api_3'); //statsd counter metric
+  logger.info("[INFO]: Update user api endpoint is called");
 
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if(err){

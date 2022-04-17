@@ -8,6 +8,9 @@ const app = express();
 var StatsD = require('node-statsd'),
 sdc = new StatsD();
 
+const log = require("./log4js")
+const logger = log.getLogger('log4js');
+
 global.__basedir = __dirname;
 
 var corsOptions = {
@@ -40,9 +43,11 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    logger.info("[INFO]: Server is running on port 3000");
 })
 
 app.get("/healthz", (req, res, next) => {
+    logger.info("[INFO]: /healthz api endpoint is called");
     sdc.increment('sdc_healthz'); //statsd counter metric
     res.json("You have reached the /healthz endpoint");
     res.status(200);
