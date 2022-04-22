@@ -19,6 +19,9 @@ module.exports = app => {
   
     // Retrieve a single User with id
     router.get("/self", auth, user.fetchUserData);
+
+    // Verify user sign up
+    router.get("/verifyUserEmail", user.verifyUser);
   
     // Update a User with id
     router.put("/self", auth, user.update);
