@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 
-AWS.config.region = process.env.REGION;
+AWS.config.region = process.env.AWS_BUCKET_REGION;
 AWS.config.credentials = new AWS.EC2MetadataCredentials({
     httpOptions: { timeout: 5000 },
     maxRetries: 10,
