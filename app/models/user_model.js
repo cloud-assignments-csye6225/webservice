@@ -47,11 +47,6 @@ module.exports = (sequelize, Sequelize) => {
                 }
             }
         },
-        status: {
-                type: Sequelize.STRING,
-                allowNull: false,
-                defaultValue: "Not Verified"
-        },
         account_created: {
             type: 'TIMESTAMP',
             defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -63,8 +58,15 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
             allowNull: false,
             
+        },
+        status: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            defaultValue: "Not Verified"
         }
-    },{
+    },
+    
+    {
         updatedAt: 'account_updated',
         createdAt: 'account_created'   
 
