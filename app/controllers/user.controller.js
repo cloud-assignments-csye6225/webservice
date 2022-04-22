@@ -102,7 +102,7 @@ exports.create = (req, res) => {
                           MessageAttributes: {
                               'username': {
                                   DataType: 'String',
-                                  StringValue: data.username
+                                  StringValue: data.dataValues.username
                               },
                               'token': {
                                   DataType: 'String',
