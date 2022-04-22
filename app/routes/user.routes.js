@@ -11,17 +11,13 @@ module.exports = app => {
   
     // Create a new User
     router.post("/", user.create);
-  
-    // Retrieve all Users
-    // router.get("/", user.findAll);
-  
-    // Retrieve all published Users
-  
+    
+    // Verify user sign up
+    router.get("/verifyUserEmail", user.verifyUser);
+    
     // Retrieve a single User with id
     router.get("/self", auth, user.fetchUserData);
 
-    // Verify user sign up
-    router.get("/verifyUserEmail", user.verifyUser);
   
     // Update a User with id
     router.put("/self", auth, user.update);

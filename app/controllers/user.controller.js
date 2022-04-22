@@ -28,20 +28,24 @@ exports.create = (req, res) => {
   logger.info("[INFO]: Create user api endpoint is called");
     // Validate request
     if (!req.body.first_name) {
+      logger.info("[ERROR] 400: First name null")
       res.status(400).send();
       return;
     }
     else if(!req.body.last_name){
-        res.status(400).send();
-          return; 
+      logger.info("[ERROR] 400: Last name null")
+      res.status(400).send();
+      return; 
     }
     else if(!req.body.username){
-        res.status(400).send();
-          return; 
+      logger.info("[ERROR] 400: Email null")
+      res.status(400).send();
+      return; 
     }
     else if(!req.body.password){
-        res.status(400).send();
-          return; 
+      logger.info("[ERROR] 400: Password null")
+      res.status(400).send();
+      return; 
     }
 
     bcrypt.hash(req.body.password, 10, (err,hash) => {
@@ -52,6 +56,7 @@ exports.create = (req, res) => {
             });
         }
         else{
+          logger.info("[INFO]: Creating User object")
             const userObject = {
                 id: req.body.id,
                 first_name: req.body.first_name,
@@ -71,7 +76,7 @@ exports.create = (req, res) => {
 
             User.create(userObject)
             .then(data => {
-                
+              logger.info("[INFO]: Sending User object for verification")
               const token = crypto.randomBytes(16).toString("hex");
               //Add record in DynamoDB
               const putParams = {
@@ -130,9 +135,10 @@ exports.create = (req, res) => {
                 
             })
             .catch(err => {
-                res.status(400).send();
-                
-         });
+                res.status(400).json({
+                  message: "Catching error"
+                });      
+            });
         }
     } )
 
