@@ -18,6 +18,9 @@ const log = require("../../log4js")
 const logger = log.getLogger('log4js');
 var StatsD = require('node-statsd'),
 sdc = new StatsD();
+const crypto = require('crypto');
+const dynamo = require('../config/dynamodb.config');
+const sns = require('../config/sns.config');
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -56,20 +59,75 @@ exports.create = (req, res) => {
                 username: req.body.username,
                 password: hash
             }
+
+            
+                    // }).catch((err) => {
+                    //     //Internal server error
+                    //     logger.info("[ERROR] 406: Something went wrong")
+                    //     console.log(err.stack);
+                    //     res.status(406).json({
+                    //         message : err.message
+                    //     });
+
             User.create(userObject)
             .then(data => {
                 
-                
-                console.log(data.id)
-                const dataNew = {
-                  id : data.id,
-                  first_name : req.body.first_name,
-                  last_name : req.body.last_name,
-                  username : req.body.username,
-                  account_created: data.account_created,
-                  account_updated: data.account_updated
-                }                
+              const token = crypto.randomBytes(16).toString("hex");
+              //Add record in DynamoDB
+              const putParams = {
+                  TableName: process.env.DYNAMODBTABLENAME,
+                  Item: {
+                      'username': {S: data.dataValues.username},
+                      'token': {S: token},
+                      'ttl': {N: (Math.floor(+new Date() / 1000) + 120).toString()}
+                  }
+              }
+              dynamo.dynamoDBClient.putItem(putParams, (err, putItemResponse) => {
+                  if (err) {
+                      logger.info(`[ERROR]: ${err.message}`)
+                      res.status(504).json({
+                          message : err.message
+                      });
+                  } else {
+                      logger.info(`[INFO]: New user token uploaded to DynamoDB : ${token}`)
+                      //Publish in Amazon SNS
+                      const message = {
+                          Message: `Email Verification Request`, /* required */
+                          TopicArn: process.env.SNSTOPICARN,
+                          MessageAttributes: {
+                              'username': {
+                                  DataType: 'String',
+                                  StringValue: data.username
+                              },
+                              'token': {
+                                  DataType: 'String',
+                                  StringValue: token
+                              }
+                      }};
+                      sns.publishTextPromise.publish(message).promise().then(
+                          function (data) {
+                              logger.info(`[INFO]: Message ${message.Message} sent to the topic ${message.TopicArn}`);
+                              logger.info("[INFO]: MessageID is " + data.MessageId);
+                              console.log(data.id)
+                              const dataNew = {
+                                id : data.id,
+                                first_name : req.body.first_name,
+                                last_name : req.body.last_name,
+                                username : req.body.username,
+                                account_created: data.account_created,
+                                account_updated: data.account_updated
+                              }                
                 res.status(201).send(dataNew);
+                          }).catch(
+                          function (err) {
+                              logger.info(`[ERROR]: ${err.message}`)
+                              console.log("sns error")
+                              res.status(504).send();
+                          });
+                  }
+              })
+
+                
             })
             .catch(err => {
                 res.status(400).send();
@@ -162,7 +220,7 @@ exports.update = (req, res) => {
         last_name: req.body.last_name,
         username: req.body.username,
         password: hash
-    }
+      }
       User.update(userUpdate, {
         where: { id: id}
        })
@@ -318,13 +376,25 @@ exports.fetchUserData=async(req, res)=>{
       username:global.username
     }
   });
-  res.status(200).send({id:result.id,
-    first_name :result.first_name,
-    last_name:result.last_name,
-    username:result.username,
-    account_created: result.account_created,
-    account_updated: result.account_updated
-  })
+
+  if (result.dataValues.status === "Verified") {
+    logger.info(`[INFO]: User email id is verified`)
+    res.status(200).send({id:result.id,
+      first_name :result.first_name,
+      last_name:result.last_name,
+      username:result.username,
+      account_created: result.account_created,
+      account_updated: result.account_updated
+    });
+  } else {
+    logger.info(`[ERROR]: User email id not verified`)
+    res.status(403).json({
+        success: false,
+        message: "Please verify your email id"
+    })
+}
+
+  
 }
 
 //fetch image data by username
@@ -422,3 +492,56 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+exports.verifyUser = (req, res) => {
+  logger.info("[INFO]: VerifyUser endpoint hit")
+  db.User.findOne({
+      where: {username: req.query.email}
+  }).then(async (response) => {
+      if (response == null) {
+          //User not present
+          logger.info("[ERROR] 400: User not found")
+          res.status(400).send();
+      } else {
+          metrics.increment('User.PUT.User_Verification')
+          //Get token from DynamoDB
+          const getParams = {
+              TableName: process.env.DYNAMODBTABLENAME,
+              Key: {
+                  "username": {S: response.dataValues.username}
+              }
+          }
+          dynamo.dynamoDBClient.getItem(getParams, (err, getResponseItem) => {
+              if (err) {
+                  logger.info(`[ERROR]: ${err.message}`);
+                  res.status(504).send();
+              } else {
+                  logger.info(`[INFO]: User verification token retrieved from DynamoDB`);
+                  if(getResponseItem.Item === undefined){
+                    response.status(400).json({
+                      message: "Link expired"
+                    })
+                  }
+                  if (getResponseItem.Item.token.S === req.query.token && Math.floor(Date.now()/1000) < getResponseItem.Item.ttl.N) {
+                      delete response.dataValues.password;
+                      const updatedUser = {
+                          ...response.dataValues,
+                          status : "Verified"
+                      }
+                      console.log(updatedUser);
+                      response.update(updatedUser).then(updatedUser => {
+                          logger.info(`[INFO]: User email id verified`)
+                          res.status(204).send();
+                      });
+                  } else {
+                      logger.info(`[ERROR]: Token mismatch`)
+                      res.status(400).json({
+                          success: false,
+                          message: "DDB Token and Params Token mismatch"
+                      });
+                  }
+              }
+          })
+      }
+  });
+}
