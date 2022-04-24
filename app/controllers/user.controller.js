@@ -502,6 +502,12 @@ exports.deleteAll = (req, res) => {
 exports.verifyUser = (req, res) => {
   try{
     logger.info("[INFO]: VerifyUser endpoint hit")
+    let result = await User.findOne({
+      where: {
+        username:req.query.email
+      }
+    });
+    logger.info(result)
   User.findOne({
       where: {username: req.query.email}
   }).then(async (response) => {
