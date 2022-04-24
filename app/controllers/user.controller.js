@@ -500,7 +500,8 @@ exports.deleteAll = (req, res) => {
 };
 
 exports.verifyUser = (req, res) => {
-  logger.info("[INFO]: VerifyUser endpoint hit")
+  try{
+    logger.info("[INFO]: VerifyUser endpoint hit")
   User.findOne({
       where: {username: req.query.email}
   }).then(async (response) => {
@@ -510,6 +511,7 @@ exports.verifyUser = (req, res) => {
           res.status(400).send();
       } else {
           metrics.increment('User.PUT.User_Verification')
+          logger.info("[INFO]: User found")
           //Get token from DynamoDB
           const getParams = {
               TableName: process.env.DYNAMODBTABLENAME,
@@ -550,4 +552,11 @@ exports.verifyUser = (req, res) => {
           })
       }
   });
+  }
+  catch(e){
+    logger.info(e.message)
+    res.json({
+      message: e.stack
+    })
+  }
 }
