@@ -502,12 +502,6 @@ exports.deleteAll = (req, res) => {
 exports.verifyUser = (req, res) => {
   try{
     logger.info("[INFO]: VerifyUser endpoint hit")
-    let result = await User.findOne({
-      where: {
-        username:req.query.email
-      }
-    });
-    logger.info(result)
   User.findOne({
       where: {username: req.query.email}
   }).then(async (response) => {
@@ -516,7 +510,7 @@ exports.verifyUser = (req, res) => {
           logger.info("[ERROR] 400: User not found")
           res.status(400).send();
       } else {
-          metrics.increment('User.PUT.User_Verification')
+          // metrics.increment('User.PUT.User_Verification')
           logger.info("[INFO]: User found")
           //Get token from DynamoDB
           const getParams = {
