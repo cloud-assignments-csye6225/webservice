@@ -10,30 +10,30 @@ module.exports = app => {
     var router = require("express").Router();
   
     // Create a new User
-    router.post("/", user.create);
+    router.post("/user", user.create);
     
     // Verify user sign up
     router.get("/verifyUserEmail", user.verifyUser);
     
     // Retrieve a single User with id
-    router.get("/self", auth, user.fetchUserData);
+    router.get("/user/self", auth, user.fetchUserData);
 
   
     // Update a User with id
-    router.put("/self", auth, user.update);
+    router.put("/user/self", auth, user.update);
 
     // Adding/Updating a picture for a user
 
-    router.post("/self/pic",auth, user.upload);
+    router.post("/user/self/pic",auth, user.upload);
    
 
     // Retrieve a user image
 
-    router.get("/self/pic", auth, user.fetchImageByUsername);
+    router.get("/user/self/pic", auth, user.fetchImageByUsername);
 
     //delete image by userId
 
-    router.delete("/self/pic",auth,user.deleteImageByUserId);
+    router.delete("/user/self/pic",auth,user.deleteImageByUserId);
 
     // router.post("/self/pic", (req, res, next) => {
     //   console.log(req.body)
@@ -44,7 +44,7 @@ module.exports = app => {
 
     // Deleting a User image
 
-    router.delete("/self/pic", user.delete);
+    router.delete("/user/self/pic", user.delete);
 
   
     // Delete a User with id
@@ -55,7 +55,7 @@ module.exports = app => {
 
 
     
-    app.use("/v1/user", router);
+    app.use("/v1", router);
 
     // ROUTE TO POST IMAGE
 
