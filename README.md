@@ -58,4 +58,7 @@ PUT : http://localhost:3000/v1/user/self
 1. Added packer template to create an AMI through github workflows that validate the packer template and build the AMI
 2. Added supporting Bash scripts to integrate the application into AMI while building the AMI
 
-A7
+
+#Command to import the SSL Certificate into ACM through aws cli:
+
+aws iam upload-server-certificate –server-certificate-name certificate-name –certificate-body file://example.crt –certificate-chain file://example-bundle.crt –private-key file://example.key
