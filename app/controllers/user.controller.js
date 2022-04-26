@@ -293,24 +293,40 @@ exports.upload = async (req, res) => {
         type: ["image/*"],
     })
     console.log(req.body)
-    if(!req.body){
-      return res.status(400).send();
-    }
+  if(!req.body){
+    return res.status(400).send();
+  }
+  
   try {
-    const file = req.file
     
-    
-      const result = await uploadFileToS3(req, res);
-    const random = Math.floor(Math.random())
-    const imageObject = {
-      file_name: result.Key,
-      url: result.Location
-    }
-    req.file_name = result.Key
-    const location = result.Location
-    const imageInfo = await this.createImage(req, res, location)
+    let temp_result = User.findOne({
+      where: {
+        username:global.username
+      }
+    });
 
-    res.status(201).send(imageInfo)
+    if (temp_result.dataValues.status === "Verified") {
+      logger.info(`[INFO]: User email id is verified - Post Image API`)
+
+      const file = req.file
+      const result = await uploadFileToS3(req, res);
+      const random = Math.floor(Math.random())
+      const imageObject = {
+        file_name: result.Key,
+        url: result.Location
+      }
+      req.file_name = result.Key
+      const location = result.Location
+      const imageInfo = await this.createImage(req, res, location)
+
+      res.status(201).send(imageInfo)
+    } else {
+      logger.info(`[ERROR]: User email id not verified`)
+      res.status(403).json({
+          success: false,
+          message: "Please verify your email id"
+    })
+  }
     
   } catch (err) {
     console.log(err);
@@ -420,13 +436,23 @@ exports.fetchImageByUsername=async(req, res)=>{
   if(!result1){
     res.status(404).send();
   }
-  res.status(200).send({
-    file_name: result1.file_name,
-    id: result1.id,
-    url: result1.url,
-    upload_date: result1.upload_date,
-    user_id: result1.user_id
-  })
+
+  if (result.dataValues.status === "Verified") {
+    logger.info(`[INFO]: User email id is verified - Get Image API`)
+    res.status(200).send({
+      file_name: result1.file_name,
+      id: result1.id,
+      url: result1.url,
+      upload_date: result1.upload_date,
+      user_id: result1.user_id
+    });
+  } else {
+    logger.info(`[ERROR]: User email id not verified`)
+    res.status(403).json({
+        success: false,
+        message: "Please verify your email id"
+    })
+  }
 
 }
 
@@ -440,14 +466,23 @@ exports.deleteImageByUserId=async(req, res)=>{
       username:global.username
     }
   });
-  let result1 = await Image.destroy({
-    where: {
-        user_id:result.id
+  if (result.dataValues.status === "Verified") {
+    logger.info(`[INFO]: User email id is verified - Delete Image API`)
+    let result1 = await Image.destroy({
+      where: {
+          user_id:result.id
+      }
+    });
+    await deleteFileFromS3(req,res,result);
+    if(!result1){
+      res.status(404).send("Profile picture doesn't exist to delete!")
     }
-  });
-  await deleteFileFromS3(req,res,result);
-  if(!result1){
-    res.status(404).send("Profile picture doesn't exist to delete!")
+  } else {
+    logger.info(`[ERROR]: User email id not verified`)
+    res.status(403).json({
+        success: false,
+        message: "Please verify your email id"
+    })
   }
   res.status(204).send()
 }
