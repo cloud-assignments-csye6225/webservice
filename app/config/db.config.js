@@ -1,3 +1,6 @@
+const fs = require('fs');
+const rdsCa = fs.readFileSync(__dirname + '/rds-combined-ca-bundle.pem');
+
 module.exports = {
 HOST : "localhost",
 USER: "postgres",
@@ -13,7 +16,11 @@ pool: {
 dialectOptions: {
     useUTC: false, //for reading from database
     dateStrings: true,
-    typeCast: true
+    typeCast: true,
+    ssl: {
+        rejectUnauthorized: true,
+        ca: [rdsCa]
+    }
 },
 timezone: '-05:00'
 }
