@@ -428,24 +428,30 @@ exports.fetchImageByUsername=async(req, res)=>{
       username:global.username
     }
   });
-  let result1 = await Image.findOne({
-    where: {
-      user_id:result.id
-    }
-  });
-  if(!result1){
-    res.status(404).send();
-  }
-
+  
   if (result.dataValues.status === "Verified") {
     logger.info(`[INFO]: User email id is verified - Get Image API`)
-    res.status(200).send({
-      file_name: result1.file_name,
-      id: result1.id,
-      url: result1.url,
-      upload_date: result1.upload_date,
-      user_id: result1.user_id
+    
+    let result1 = await Image.findOne({
+      where: {
+        user_id:result.id
+      }
     });
+    if(!result1){
+      res.status(404).json({
+        message: "Profile picture doesn't exist for this user"
+      });
+    }
+    else{
+      res.status(200).send({
+        file_name: result1.file_name,
+        id: result1.id,
+        url: result1.url,
+        upload_date: result1.upload_date,
+        user_id: result1.user_id
+      });
+    }
+    
   } else {
     logger.info(`[ERROR]: User email id not verified`)
     res.status(403).json({
