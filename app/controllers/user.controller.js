@@ -309,24 +309,24 @@ exports.upload = async (req, res) => {
     const location = result.Location
     const imageInfo = await this.createImage(req, res, location)
     
-    let temp_result = User.findOne({
-      where: {
-        username:global.username
-      }
-    });
+    // let temp_result = User.findOne({
+    //   where: {
+    //     username:global.username
+    //   }
+    // });
 
-    if (temp_result.dataValues.status === "Verified") {
-      logger.info(`[INFO]: User email id is verified - Post Image API`)
+    // if (temp_result.dataValues.status === "Verified") {
+    //   logger.info(`[INFO]: User email id is verified - Post Image API`)
 
 
       res.status(201).send(imageInfo)
-    } else {
-      logger.info(`[ERROR]: User email id not verified`)
-      res.status(403).json({
-          success: false,
-          message: "Please verify your email id"
-    })
-  }
+  //   } else {
+  //     logger.info(`[ERROR]: User email id not verified`)
+  //     res.status(403).json({
+  //         success: false,
+  //         message: "Please verify your email id"
+  //   })
+  // }
     
   } catch (err) {
     console.log(err);
@@ -336,7 +336,10 @@ exports.upload = async (req, res) => {
         message: "File size cannot be larger than 2MB!",
       });
     }
-    return res.status(400).send();
+    return res.status(403).json({
+      success: false,
+      message: "Please verify your email id"
+    });
     
   }
 };
