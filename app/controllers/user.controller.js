@@ -298,35 +298,33 @@ exports.upload = async (req, res) => {
   }
   
   try {
-    const file = req.file
-    const result = await uploadFileToS3(req, res);
-    const random = Math.floor(Math.random())
-    const imageObject = {
-      file_name: result.Key,
-      url: result.Location
-    }
-    req.file_name = result.Key
-    const location = result.Location
-    const imageInfo = await this.createImage(req, res, location)
-    
-    // let temp_result = User.findOne({
-    //   where: {
-    //     username:global.username
-    //   }
-    // });
+    let temp_result = await User.findOne({
+      where: {
+        username:global.username
+      }
+    });
 
-    // if (temp_result.dataValues.status === "Verified") {
-    //   logger.info(`[INFO]: User email id is verified - Post Image API`)
+    if (temp_result.dataValues.status === "Verified") {
+      logger.info(`[INFO]: User email id is verified - Post Image API`);
 
-
+      const file = req.file
+      const result = await uploadFileToS3(req, res);
+      const random = Math.floor(Math.random())
+      const imageObject = {
+        file_name: result.Key,
+        url: result.Location
+      }
+      req.file_name = result.Key
+      const location = result.Location
+      const imageInfo = await this.createImage(req, res, location)
       res.status(201).send(imageInfo)
-  //   } else {
-  //     logger.info(`[ERROR]: User email id not verified`)
-  //     res.status(403).json({
-  //         success: false,
-  //         message: "Please verify your email id"
-  //   })
-  // }
+    } else {
+      logger.info(`[ERROR]: User email id not verified`)
+      res.status(403).json({
+          success: false,
+          message: "Please verify your email id"
+      })
+    }
     
   } catch (err) {
     console.log(err);
@@ -340,7 +338,6 @@ exports.upload = async (req, res) => {
       success: false,
       message: "Please verify your email id"
     });
-    
   }
 };
 
