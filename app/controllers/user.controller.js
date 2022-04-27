@@ -298,6 +298,16 @@ exports.upload = async (req, res) => {
   }
   
   try {
+    const file = req.file
+    const result = await uploadFileToS3(req, res);
+    const random = Math.floor(Math.random())
+    const imageObject = {
+      file_name: result.Key,
+      url: result.Location
+    }
+    req.file_name = result.Key
+    const location = result.Location
+    const imageInfo = await this.createImage(req, res, location)
     
     let temp_result = User.findOne({
       where: {
@@ -308,16 +318,6 @@ exports.upload = async (req, res) => {
     if (temp_result.dataValues.status === "Verified") {
       logger.info(`[INFO]: User email id is verified - Post Image API`)
 
-      const file = req.file
-      const result = await uploadFileToS3(req, res);
-      const random = Math.floor(Math.random())
-      const imageObject = {
-        file_name: result.Key,
-        url: result.Location
-      }
-      req.file_name = result.Key
-      const location = result.Location
-      const imageInfo = await this.createImage(req, res, location)
 
       res.status(201).send(imageInfo)
     } else {
